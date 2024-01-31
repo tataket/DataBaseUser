@@ -1,27 +1,27 @@
 package com.mindera.users.entity;
 
-import jakarta.persistence.Entity;
-import lombok.Builder;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import jakarta.persistence.*;
+import lombok.*;
 
 @Getter
 @Setter
-@Data
 @Builder
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
+@Table(name = "userTable")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class User {
-    private Integer id;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(unique = true)
+    private Long id;
+
+    @Column(nullable = false)
     private String username;
+
+    @Column(nullable = false)
     private String password;
-
-    public User() {
-    }
-
-    public User(Integer id, String username, String password) {
-        this.id = id;
-        this.username = username;
-        this.password = password;
-    }
 }

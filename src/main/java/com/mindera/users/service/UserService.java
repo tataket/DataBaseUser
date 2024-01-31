@@ -2,17 +2,16 @@ package com.mindera.users.service;
 
 import com.mindera.users.entity.User;
 import com.mindera.users.repository.UsersRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
+@AllArgsConstructor
 @Service
 public class UserService {
     private final UsersRepository repository;
-
-    public UserService(UsersRepository repository) {
-        this.repository = repository;
-    }
 
     public List<User> getUsers() {
         return repository.findAll().stream().toList();
@@ -26,11 +25,11 @@ public class UserService {
         return newUser;
     }
 
-    public User getUserById(Integer userId) {
+    public User getUserById(Long userId) {
         return repository.getReferenceById(userId);
     }
 
-    public User updateUser(Integer userId, User user) {
+    public User updateUser(Long userId, User user) {
         User userExist = repository.getReferenceById(userId);
         userExist.setUsername(user.getUsername());
         userExist.setPassword(user.getPassword());
@@ -38,17 +37,23 @@ public class UserService {
         return userExist;
     }
 
-    public void deleteUser(Integer userId) {
+    public void deleteUser(Long userId) {
         repository.deleteById(userId);
     }
 
-    public User updateUserDetail(Integer userId, User user) {
-        if (!user.getUsername().isEmpty()) {
-            repository.getReferenceById(userId).setUsername(user.getUsername());
+    public void updateUserDetail(Long userId, User user) {
+        if (repository.existsById(userId)) {
+            User userExist = repository.findById(userId).orElse(null);
+            if (user.getUsername() != null) {
+                assert userExist != null;
+                userExist.setUsername(user.getUsername());
+            }
+            if (user.getPassword() != null) {
+                assert userExist != null;
+                userExist.setPassword(user.getPassword());
+            }
+            assert userExist != null;
+            repository.save(userExist);
         }
-        if (!user.getPassword().isEmpty()) {
-            repository.getReferenceById(userId).setPassword(user.getPassword());
-        }
-        return repository.getReferenceById(userId);
     }
 }
