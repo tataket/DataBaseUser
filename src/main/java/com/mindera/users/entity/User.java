@@ -11,7 +11,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "userTable")
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+@ JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class User {
 
     @Id

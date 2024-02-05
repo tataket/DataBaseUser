@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/user")
@@ -29,8 +30,8 @@ public class UserController {
     }
 
     @GetMapping("/{userId}")
-    public User getUserById(@PathVariable Long  userId) {
-        return userService.getUserById(userId);
+    public Optional<User> findById(@PathVariable Long  userId) {
+        return userService.findById(userId);
     }
 
     @PutMapping("/{userId}")
@@ -44,8 +45,8 @@ public class UserController {
     }
 
     @PatchMapping("/{userId}")
-    public void updateUserDetail(@PathVariable Long  userId, @RequestBody User user) {
-        userService.updateUserDetail(userId, user);
+    public User updateUserDetail(@PathVariable Long  userId, @RequestBody User user) {
+       return userService.updateUserDetail(userId, user);
     }
 }
 
