@@ -38,7 +38,7 @@ class UsersApplicationTests {
     @MockBean
     UsersRepository usersRepository;
     List<User> userList;
-    User user1 =  User.builder()
+    User user1 = User.builder()
             .id(1L)
             .username("Bruna")
             .password("111")
@@ -48,15 +48,16 @@ class UsersApplicationTests {
             .username("Chico")
             .password("222")
             .build();
-    User user3  = User.builder()
+    User user3 = User.builder()
             .id(3L)
             .username("Rodrigo")
             .password("333")
-            .build();;
+            .build();
+    ;
 
     @BeforeEach
     public void setup() {
-        userList = new ArrayList<>(Arrays.asList(user1,user2,user3));
+        userList = new ArrayList<>(Arrays.asList(user1, user2, user3));
         Mockito.mock(UsersRepository.class);
     }
 
@@ -71,15 +72,15 @@ class UsersApplicationTests {
                 .andExpect(jsonPath("$[0].username", is("Bruna")))
                 .andExpect(jsonPath("$[1].username", is("Chico")))
                 .andExpect(jsonPath("$[2].username", is("Rodrigo")))
-                .andDo(e-> System.out.println(e.getResponse().getContentAsString()));
+                .andDo(e -> System.out.println(e.getResponse().getContentAsString()));
     }
 
     @Test
     void getAllUserNotSuccess_NotFound() throws Exception {
         Mockito.when(usersRepository.findAll()).thenReturn(userList);
         mockMvc.perform(MockMvcRequestBuilders
-                .get("/user/3")
-                .contentType(MediaType.APPLICATION_JSON))
+                        .get("/user/3")
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }
 
@@ -103,20 +104,20 @@ class UsersApplicationTests {
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$", notNullValue()))
                 .andExpect(jsonPath("$.username", is("Fatima")))
-                .andDo(e-> System.out.println(e.getResponse().getContentAsString()));
+                .andDo(e -> System.out.println(e.getResponse().getContentAsString()));
 
     }
 
     @Test
-    void addUserNotSuccess_MissArgs() throws Exception{
+    void addUserNotSuccess_MissArgs() throws Exception {
         User userTestAdd = User.builder()
                 .id(5L)
                 .build();
         Mockito.when(usersRepository.save(userTestAdd)).thenReturn(userTestAdd);
         mockMvc.perform(MockMvcRequestBuilders
-                .post("/user")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(this.mapper.writeValueAsString(userTestAdd)))
+                        .post("/user")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(this.mapper.writeValueAsString(userTestAdd)))
                 .andExpect(status().isBadRequest());
 
 
@@ -138,11 +139,11 @@ class UsersApplicationTests {
     void getByIdUserNotSuccess_NotFound() throws Exception {
         Mockito.when(usersRepository.getReferenceById(1L)).thenReturn(null);
         mockMvc.perform(MockMvcRequestBuilders
-                .get("/user/1")
+                        .get("/user/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
-                .andDo(e-> System.out.println(e.getResponse().getContentAsString()));
+                .andDo(e -> System.out.println(e.getResponse().getContentAsString()));
     }
 
     @Test
@@ -155,9 +156,9 @@ class UsersApplicationTests {
         Mockito.when(usersRepository.save(userPutUpdated)).thenReturn(userPutUpdated);
         Mockito.when(usersRepository.findById(user1.getId())).thenReturn(Optional.ofNullable(user1));
         mockMvc.perform(MockMvcRequestBuilders
-                .put("/user/1")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(this.mapper.writeValueAsString(userPutUpdated)))
+                        .put("/user/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(this.mapper.writeValueAsString(userPutUpdated)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", notNullValue()))
                 .andExpect(jsonPath("$.username", is("UpdatedName")))
@@ -166,25 +167,25 @@ class UsersApplicationTests {
 
 
     /*
-    * null null
-    * UserName, password
-    * null, password
-    * UserName, mull
-    * arrumar uma maneira de fazer as 4 verificações para att no patch
-    */
+     * null null
+     * UserName, password
+     * null, password
+     * UserName, mull
+     * arrumar uma maneira de fazer as 4 verificações para att no patch
+     */
     @Test
-    void updatePatchUserSuccess() throws Exception{
-       User userPatchUpdated = User.builder()
-               .id(3L)
-               .username("null")
-               .password("null")
-               .build();
+    void updatePatchUserSuccess() throws Exception {
+        User userPatchUpdated = User.builder()
+                .id(3L)
+                .username("null")
+                .password("null")
+                .build();
 
         Mockito.when(usersRepository.findById(user3.getId())).thenReturn(Optional.ofNullable(user3));
         Mockito.when(usersRepository.save(userPatchUpdated)).thenReturn(userPatchUpdated);
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-                .patch("/user/{id}",3L)
+                .patch("/user/{id}", 3L)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(this.mapper.writeValueAsString(userPatchUpdated));
@@ -195,13 +196,13 @@ class UsersApplicationTests {
     }
 
     @Test
-    void updatePatchUser_NotFound() throws Exception{
+    void updatePatchUser_NotFound() throws Exception {
         User userNoPass = User.builder()
                 .id(1L)
                 .username("Bruna")
                 .build();
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-                .patch("/user/{id}",1)
+                .patch("/user/{id}", 1)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(this.mapper.writeValueAsString(userNoPass));
@@ -211,40 +212,41 @@ class UsersApplicationTests {
     }
 
     @Test
-    void updateUserNotFound() throws Exception{
+    void updateUserNotFound() throws Exception {
         User userNoId = User.builder()
                 .username("Bruna")
                 .build();
         Mockito.when(usersRepository.findById(1L)).thenReturn(Optional.empty());
         Mockito.when(usersRepository.save(userNoId)).thenReturn(userNoId);
         mockMvc.perform(MockMvcRequestBuilders
-                .put("/user/{id}",1)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(this.mapper.writeValueAsString(userNoId)))
+                        .put("/user/{id}", 1)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(this.mapper.writeValueAsString(userNoId)))
                 .andExpect(status().isNotFound())
                 .andDo(e -> System.out.println(e.getResponse().getContentAsString()));
     }
+
     @Test
-    void deleteUserByIdSuccess() throws Exception{
+    void deleteUserByIdSuccess() throws Exception {
         long id = 2L;
         Mockito.when(usersRepository.findById(2L)).thenReturn(Optional.ofNullable(user2));
         mockMvc.perform(MockMvcRequestBuilders
-                .delete("/user/2")
-                .contentType(MediaType.APPLICATION_JSON))
+                        .delete("/user/2")
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
-        Mockito.verify(usersRepository,Mockito.times(1)).deleteById(id);
+        Mockito.verify(usersRepository, Mockito.times(1)).deleteById(id);
     }
 
     @Test
-    void deleteUserByIdNotSuccess_NotFound() throws Exception{
+    void deleteUserByIdNotSuccess_NotFound() throws Exception {
         long idTest = 4L;
         Mockito.when(usersRepository.findById(idTest)).thenReturn(Optional.empty());
         mockMvc.perform(MockMvcRequestBuilders
                         .delete("/user/4")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
-        Mockito.verify(usersRepository,Mockito.times(0)).deleteById(idTest);
+        Mockito.verify(usersRepository, Mockito.times(0)).deleteById(idTest);
     }
-    }
+}
 
 
