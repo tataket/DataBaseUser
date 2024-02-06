@@ -76,7 +76,7 @@ class UsersApplicationTests {
     }
 
     @Test
-    void getAllUserNotSuccess_NotFound() throws Exception {
+    void getAllUserNoSuccess_NotFound() throws Exception {
         Mockito.when(usersRepository.findAll()).thenReturn(userList);
         mockMvc.perform(MockMvcRequestBuilders
                         .get("/user/3")
@@ -109,7 +109,7 @@ class UsersApplicationTests {
     }
 
     @Test
-    void addUserNotSuccess_MissArgs() throws Exception {
+    void addUserNoSuccess_MissArgs() throws Exception {
         User userTestAdd = User.builder()
                 .id(5L)
                 .build();
@@ -136,7 +136,7 @@ class UsersApplicationTests {
     }
 
     @Test
-    void getByIdUserNotSuccess_NotFound() throws Exception {
+    void getByIdUserNoSuccess_NotFound() throws Exception {
         Mockito.when(usersRepository.getReferenceById(1L)).thenReturn(null);
         mockMvc.perform(MockMvcRequestBuilders
                         .get("/user/1")
@@ -238,7 +238,7 @@ class UsersApplicationTests {
     }
 
     @Test
-    void deleteUserByIdNotSuccess_NotFound() throws Exception {
+    void deleteUserByIdNoSuccess_NotFound() throws Exception {
         long idTest = 4L;
         Mockito.when(usersRepository.findById(idTest)).thenReturn(Optional.empty());
         mockMvc.perform(MockMvcRequestBuilders
