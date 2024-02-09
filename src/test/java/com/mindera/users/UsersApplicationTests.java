@@ -1,6 +1,5 @@
 package com.mindera.users;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mindera.users.entity.User;
 import com.mindera.users.repository.UsersRepository;
@@ -9,7 +8,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -244,7 +242,6 @@ class UsersApplicationTests {
         mockMvc.perform(mockHttpServletRequestBuilder)
                 .andExpect(status().isOk())
                 .andDo(e -> System.out.println(e.getResponse().getContentAsString()));
-
     }
 
     @Test
