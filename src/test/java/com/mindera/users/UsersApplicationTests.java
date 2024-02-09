@@ -5,7 +5,9 @@ import com.mindera.users.entity.User;
 import com.mindera.users.repository.UsersRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -23,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -53,7 +56,7 @@ class UsersApplicationTests {
             .username("Rodrigo")
             .password("333")
             .build();
-    ;
+
 
     @BeforeEach
     public void setup() {
@@ -211,8 +214,38 @@ class UsersApplicationTests {
                 .andDo(e -> System.out.println(e.getResponse().getContentAsString()));
     }
 
+    private static Stream<Arguments> testUpdatePatchUserIsOkArgs(){
+        return Stream.of(
+                Arguments.of("username", null),
+                Arguments.of(null, "password"),
+                Arguments.of("username", "password")
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("testUpdatePatchUserIsOkArgs")
+    void testUpdatePatchUserIsOk(String username, String password) throws Exception {
+        long idUpdated = 1L;
+        User userUpdatedPatch = User.builder()
+                .username(username)
+                .password(password)
+                .build();
+
+        Mockito.when(usersRepository.findById(idUpdated)).thenReturn(Optional.ofNullable(userList.get((int) idUpdated)));
+        Mockito.when(usersRepository.save(userList.get((int) idUpdated))).thenReturn(userUpdatedPatch);
+
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+                .patch("/user/{id}",1)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(this.mapper.writeValueAsString(userUpdatedPatch));
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andExpect(status().isOk())
+                .andDo(e -> System.out.println(e.getResponse().getContentAsString()));
+    }
+
     @Test
-    void updateUserNotFound() throws Exception {
+    void updatePutUserNotFound() throws Exception {
         User userNoId = User.builder()
                 .username("Bruna")
                 .build();
